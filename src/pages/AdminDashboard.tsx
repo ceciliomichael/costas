@@ -3,14 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import BookingsManagement from '../components/BookingsManagement';
 import CustomerManagement from '../components/CustomerManagement';
+import Analytics from '../components/Analytics';
 
 // Import icons from react-icons
 import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt, FaRobot } from 'react-icons/fa';
 
+interface Statistics {
+  roomTypeStats: Record<string, number>;
+  monthlyRevenue: Record<string, number>;
+  totalBookings: number;
+  totalRevenue: number;
+}
+
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const [statistics, setStatistics] = useState({
+  const [statistics, setStatistics] = useState<Statistics>({
     roomTypeStats: {},
     monthlyRevenue: {},
     totalBookings: 0,
@@ -79,7 +87,7 @@ const AdminDashboard: React.FC = () => {
                         <div 
                           className="stat-bar-fill" 
                           style={{ 
-                            width: `${(Number(count) / statistics.totalBookings * 100)}%`
+                            width: `${(count / statistics.totalBookings * 100)}%`
                           }}
                         />
                       </div>
@@ -101,11 +109,11 @@ const AdminDashboard: React.FC = () => {
                         <div 
                           className="revenue-bar-fill" 
                           style={{ 
-                            height: `${(Number(revenue) / Math.max(...Object.values(statistics.monthlyRevenue || {})) * 100)}%`
+                            height: `${(revenue / Math.max(...Object.values(statistics.monthlyRevenue || {})) * 100)}%`
                           }}
                         />
                       </div>
-                      <div className="revenue-value">₱{Number(revenue).toLocaleString()}</div>
+                      <div className="revenue-value">₱{revenue.toLocaleString()}</div>
                     </div>
                   ))}
                 </div>
@@ -121,12 +129,7 @@ const AdminDashboard: React.FC = () => {
         return <CustomerManagement />;
       
       case 'analytics':
-        return (
-          <div className="dashboard-section">
-            <h2>Analytics</h2>
-            <p>Coming soon...</p>
-          </div>
-        );
+        return <Analytics />;
 
       case 'ai-knowledgebase':
         return (
@@ -183,14 +186,14 @@ const AdminDashboard: React.FC = () => {
     if (!statistics.roomTypeStats) return 'N/A';
     const entries = Object.entries(statistics.roomTypeStats);
     if (entries.length === 0) return 'N/A';
-    return entries.reduce((a, b) => Number(b[1]) > Number(a[1]) ? b : a)[0];
+    return entries.reduce((a, b) => b[1] > a[1] ? b : a)[0];
   };
 
   const calculateMonthlyAverage = () => {
     if (!statistics.monthlyRevenue) return 0;
     const revenues = Object.values(statistics.monthlyRevenue);
     if (revenues.length === 0) return 0;
-    const total = revenues.reduce((sum, revenue) => sum + Number(revenue), 0);
+    const total = revenues.reduce((sum, revenue) => sum + revenue, 0);
     return Math.round(total / revenues.length).toLocaleString();
   };
 

@@ -17,6 +17,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Add cache control middleware
+app.use((req, res, next) => {
+  // No cache headers
+  res.header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.header('Pragma', 'no-cache');
+  res.header('Expires', '0');
+  res.header('Surrogate-Control', 'no-store');
+  next();
+});
+
 // Types for multer request
 interface MulterRequest extends Request {
   file?: Express.Multer.File;
