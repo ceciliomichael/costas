@@ -202,12 +202,13 @@ const Booking: React.FC = () => {
   const [guestInfo, setGuestInfo] = useState({
     firstName: '',
     lastName: '',
-    email: ''
+    email: '',
+    phone: ''
   });
 
   const phases = [
     'Room Selection',
-    'Dates & Guests',
+    'Guest Details',
     'Add-ons',
     'Review',
     'Payment',
@@ -291,7 +292,7 @@ const Booking: React.FC = () => {
         }
         return true;
 
-      case 1: // Dates & Guests
+      case 1: // Guest Details
         if (!dates.checkIn || !dates.checkOut) {
           setValidationError('Please select both check-in and check-out dates');
           return false;
@@ -312,10 +313,22 @@ const Booking: React.FC = () => {
           return false;
         }
 
+        if (!guestInfo.phone.trim()) {
+          setValidationError('Please enter your phone number');
+          return false;
+        }
+
         // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(guestInfo.email)) {
           setValidationError('Please enter a valid email address');
+          return false;
+        }
+
+        // Basic phone validation (at least 10 digits)
+        const phoneRegex = /^\+?[\d\s-]{10,}$/;
+        if (!phoneRegex.test(guestInfo.phone.trim())) {
+          setValidationError('Please enter a valid phone number (at least 10 digits)');
           return false;
         }
 
@@ -356,12 +369,6 @@ const Booking: React.FC = () => {
 
   const saveBookingToDatabase = async (reference: string) => {
     try {
-      // Get the name from either card payment or bank transfer
-      const fullName = paymentDetails.cardName || paymentDetails.senderName;
-      const names = fullName.split(' ');
-      const firstName = names[0] || 'Guest';
-      const lastName = names.slice(1).join(' ') || 'User';
-
       // Create form data to send file
       const formData = new FormData();
 
@@ -370,7 +377,7 @@ const Booking: React.FC = () => {
         firstName: guestInfo.firstName,
         lastName: guestInfo.lastName,
         email: guestInfo.email,
-        phone: '',
+        phoneNumber: guestInfo.phone,
         date: new Date(dates.checkIn).toISOString(),
         time: '14:00',
         numberOfGuests: guests.adults + guests.children,
@@ -402,8 +409,7 @@ const Booking: React.FC = () => {
 
       const response = await fetch('http://localhost:5000/api/bookings', {
         method: 'POST',
-        body: formData, // Send formData instead of JSON
-        // Remove Content-Type header as it will be set automatically with boundary
+        body: formData
       });
 
       if (!response.ok) {
@@ -674,7 +680,7 @@ const Booking: React.FC = () => {
       case 1:
         return (
           <div className="dates-guests">
-            <h2>Select Dates & Guests</h2>
+            <h2>Guest Information & Stay Details</h2>
             <div className="form-grid">
               <div className="guest-info">
                 <div className="input-group">
@@ -707,6 +713,17 @@ const Booking: React.FC = () => {
                     value={guestInfo.email}
                     onChange={(e) => setGuestInfo({ ...guestInfo, email: e.target.value })}
                     placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="phone">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={guestInfo.phone}
+                    onChange={(e) => setGuestInfo({ ...guestInfo, phone: e.target.value })}
+                    placeholder="Enter your phone number"
                     required
                   />
                 </div>

@@ -1,0 +1,306 @@
+.customer-management {
+  padding: 20px;
+}
+
+.customer-header {
+  margin-bottom: 30px;
+}
+
+.customer-header h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card h3 {
+  color: #666;
+  font-size: 1rem;
+  margin: 0 0 8px 0;
+}
+
+.stat-card p {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.customers-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+}
+
+.customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.customers-table th {
+  background-color: #f8f9fa;
+  padding: 16px;
+  text-align: left;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 2px solid #eee;
+}
+
+.customers-table td {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.action-buttons button:hover {
+  color: #B8860B;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.customer-details {
+  margin-bottom: 30px;
+}
+
+.customer-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.info-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.info-icon {
+  color: #B8860B;
+  font-size: 24px;
+  margin-top: 4px;
+}
+
+.info-group h3 {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 4px 0;
+}
+
+.info-group p {
+  color: #333;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.booking-history {
+  margin-top: 30px;
+}
+
+.booking-history h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.booking-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.booking-history th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 2px solid #eee;
+}
+
+.booking-history td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.modal-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  background-color: #f8f9fa;
+  color: #666;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .customer-management {
+    padding: 16px;
+  }
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .customer-info {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    margin: 16px;
+    width: auto;
+  }
+
+  .info-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-icon {
+    font-size: 20px;
+  }
+} 

@@ -1966,6 +1966,11 @@
   color: #999;
 }
 
+/* Add specific styles for phone input */
+.guest-info input[type="tel"] {
+  letter-spacing: 0.5px;
+}
+
 @media (max-width: 768px) {
   .guest-info {
     margin-bottom: 1.5rem;

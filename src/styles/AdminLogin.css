@@ -1,0 +1,104 @@
+.admin-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+              url('/images/hero-bg.jpg') center/cover no-repeat;
+  padding: 20px;
+}
+
+.admin-login-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(10px);
+}
+
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-login-header h1 {
+  color: #B8860B;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.admin-login-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-login-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-login-input-group label {
+  color: #333;
+  font-weight: 500;
+}
+
+.admin-login-input-group input {
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-login-input-group input:focus {
+  border-color: #B8860B;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.1);
+}
+
+.admin-login-button {
+  background-color: #B8860B;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.admin-login-button:hover {
+  background-color: #986c09;
+  transform: translateY(-1px);
+}
+
+.admin-login-error {
+  background-color: #fff2f2;
+  color: #dc3545;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #ffcdd2;
+}
+
+@media (max-width: 480px) {
+  .admin-login-card {
+    padding: 30px 20px;
+  }
+
+  .admin-login-header h1 {
+    font-size: 2rem;
+  }
+} 

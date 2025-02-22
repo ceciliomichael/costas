@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Booking from './pages/Booking';
 import ErrorPage from './components/ErrorPage';
 import LoadingDialog from './components/LoadingDialog';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import './styles/App.css';
 
 const App: React.FC = () => {
@@ -13,6 +15,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/error/500" element={<ErrorPage code="500" />} />
           <Route path="/404" element={<ErrorPage code="404" />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
