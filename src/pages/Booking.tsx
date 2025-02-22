@@ -196,6 +196,14 @@ const Booking: React.FC = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [isFinalizingBooking, setIsFinalizingBooking] = useState(false);
+  const [bookingError, setBookingError] = useState<string>('');
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [guestInfo, setGuestInfo] = useState({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
 
   const phases = [
     'Room Selection',
@@ -289,6 +297,28 @@ const Booking: React.FC = () => {
           return false;
         }
 
+        if (!guestInfo.firstName.trim()) {
+          setValidationError('Please enter your first name');
+          return false;
+        }
+
+        if (!guestInfo.lastName.trim()) {
+          setValidationError('Please enter your last name');
+          return false;
+        }
+
+        if (!guestInfo.email.trim()) {
+          setValidationError('Please enter your email');
+          return false;
+        }
+
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(guestInfo.email)) {
+          setValidationError('Please enter a valid email address');
+          return false;
+        }
+
         const totalGuests = guests.adults + guests.children;
         const maxGuests = selectedRoom?.type === 'Deluxe Tepee' ? 7 
           : selectedRoom?.type === 'Standard Tepee' ? 4 
@@ -324,36 +354,149 @@ const Booking: React.FC = () => {
     return `${prefix}${timestamp}${random}`;
   };
 
-  const handlePaymentSubmit = () => {
+  const saveBookingToDatabase = async (reference: string) => {
+    try {
+      // Get the name from either card payment or bank transfer
+      const fullName = paymentDetails.cardName || paymentDetails.senderName;
+      const names = fullName.split(' ');
+      const firstName = names[0] || 'Guest';
+      const lastName = names.slice(1).join(' ') || 'User';
+
+      // Create form data to send file
+      const formData = new FormData();
+
+      // Add all booking data
+      const bookingData = {
+        firstName: guestInfo.firstName,
+        lastName: guestInfo.lastName,
+        email: guestInfo.email,
+        phone: '',
+        date: new Date(dates.checkIn).toISOString(),
+        time: '14:00',
+        numberOfGuests: guests.adults + guests.children,
+        specialRequests: '',
+        status: 'pending',
+        roomType: selectedRoom?.type || '',
+        checkInDate: new Date(dates.checkIn).toISOString(),
+        checkOutDate: new Date(dates.checkOut).toISOString(),
+        adults: guests.adults,
+        children: guests.children,
+        addOns: selectedAddOns,
+        totalAmount: calculateTotal().total,
+        paymentMethod: selectedPaymentMethod,
+        paymentStatus: 'completed',
+        bookingReference: reference
+      };
+
+      // Add all booking data fields to formData
+      Object.entries(bookingData).forEach(([key, value]) => {
+        formData.append(key, typeof value === 'string' ? value : JSON.stringify(value));
+      });
+
+      // Add payment proof file if exists
+      if (paymentDetails.paymentProof) {
+        formData.append('paymentProof', paymentDetails.paymentProof);
+      }
+
+      console.log('Sending booking data:', bookingData);
+
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        body: formData, // Send formData instead of JSON
+        // Remove Content-Type header as it will be set automatically with boundary
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error details:', errorData);
+        throw new Error(errorData.message || 'Failed to save booking');
+      }
+
+      const savedBooking = await response.json();
+      console.log('Booking saved:', savedBooking);
+      return true;
+    } catch (error) {
+      console.error('Error saving booking:', error);
+      setBookingError('Failed to save booking. Please try again.');
+      return false;
+    }
+  };
+
+  const handlePaymentSubmit = async () => {
+    if (!validatePaymentDetails()) {
+      return;
+    }
+
     if (selectedPaymentMethod === 'credit-card') {
+      setShowDialog(true);
+      setDialogMessage('Processing your credit card payment...');
       setIsProcessingPayment(true);
+
       // Simulate payment processing
-      setTimeout(() => {
+      setTimeout(async () => {
+        setDialogMessage('Payment successful! Processing your booking...');
         setIsProcessingPayment(false);
         setIsPaymentSuccess(true);
+
         // Simulate success confirmation duration
-        setTimeout(() => {
+        setTimeout(async () => {
+          setDialogMessage('Finalizing your booking...');
           setIsPaymentSuccess(false);
           setIsFinalizingBooking(true);
-          // Simulate finalizing booking
-          setTimeout(() => {
-            setIsFinalizingBooking(false);
-            const reference = generateBookingReference();
-            setBookingReference(reference);
-            setIsPaymentComplete(true);
-            setCurrentPhase(5);
-          }, 2000);
+
+          // Generate reference first
+          const reference = generateBookingReference();
+          setBookingReference(reference);
+          
+          // Pass the reference to saveBookingToDatabase
+          const bookingSaved = await saveBookingToDatabase(reference);
+          
+          if (bookingSaved) {
+            setDialogMessage('Booking confirmed! Redirecting to confirmation...');
+            setTimeout(() => {
+              setShowDialog(false);
+              setIsPaymentComplete(true);
+              setCurrentPhase(5);
+            }, 1500);
+          } else {
+            setDialogMessage('Failed to save booking. Please try again.');
+            setTimeout(() => {
+              setShowDialog(false);
+              setValidationError('Failed to save booking. Please try again.');
+            }, 2000);
+          }
+          setIsFinalizingBooking(false);
         }, 2000);
       }, 3000);
     } else {
-      // For other payment methods, proceed directly
+      // For other payment methods (GCash, Bank Transfer)
+      setShowDialog(true);
+      setDialogMessage('Processing your booking...');
       setIsFinalizingBooking(true);
-      setTimeout(() => {
-        setIsFinalizingBooking(false);
+
+      setTimeout(async () => {
+        setDialogMessage('Finalizing your booking...');
+        
         const reference = generateBookingReference();
         setBookingReference(reference);
-        setIsPaymentComplete(true);
-        setCurrentPhase(5);
+        
+        const bookingSaved = await saveBookingToDatabase(reference);
+        
+        if (bookingSaved) {
+          setDialogMessage('Booking confirmed! Redirecting to confirmation...');
+          setTimeout(() => {
+            setShowDialog(false);
+            setIsPaymentComplete(true);
+            setCurrentPhase(5);
+          }, 1500);
+        } else {
+          setDialogMessage('Failed to save booking. Please try again.');
+          setTimeout(() => {
+            setShowDialog(false);
+            setValidationError('Failed to save booking. Please try again.');
+          }, 2000);
+        }
+        setIsFinalizingBooking(false);
       }, 2000);
     }
   };
@@ -533,6 +676,41 @@ const Booking: React.FC = () => {
           <div className="dates-guests">
             <h2>Select Dates & Guests</h2>
             <div className="form-grid">
+              <div className="guest-info">
+                <div className="input-group">
+                  <label htmlFor="firstName">First Name *</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    value={guestInfo.firstName}
+                    onChange={(e) => setGuestInfo({ ...guestInfo, firstName: e.target.value })}
+                    placeholder="Enter your first name"
+                    required
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="lastName">Last Name *</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    value={guestInfo.lastName}
+                    onChange={(e) => setGuestInfo({ ...guestInfo, lastName: e.target.value })}
+                    placeholder="Enter your last name"
+                    required
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="email">Email *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={guestInfo.email}
+                    onChange={(e) => setGuestInfo({ ...guestInfo, email: e.target.value })}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
               <div className="date-inputs">
                 <div className="input-group">
                   <label htmlFor="check-in">Check-in Date</label>
@@ -1143,58 +1321,15 @@ const Booking: React.FC = () => {
 
   return (
     <div className="booking-page">
+      {showDialog && (
+        <LoadingDialog message={dialogMessage} />
+      )}
+
       {isReturningHome && (
         <LoadingDialog message={currentPhase === 5 
           ? "Thank you for booking with us! Redirecting to home..." 
           : "Redirecting to home page..."} 
         />
-      )}
-
-      {isProcessingPayment && (
-        <div className="payment-modal">
-          <div className="modal-content payment-processing">
-            <div className="processing-animation">
-              <div className="spinner"></div>
-            </div>
-            <h3>Processing Payment</h3>
-            <p>Please do not close this window...</p>
-            <div className="processing-details">
-              <p>Amount: ₱{calculateTotal().total.toLocaleString()}</p>
-              <p>Card: •••• {paymentDetails.cardNumber.slice(-4)}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isPaymentSuccess && (
-        <div className="payment-modal">
-          <div className="modal-content payment-success">
-            <div className="success-icon">✓</div>
-            <h3>Payment Successful!</h3>
-            <p>Your payment has been processed successfully.</p>
-            <div className="success-details">
-              <p>Amount Paid: ₱{calculateTotal().total.toLocaleString()}</p>
-              <p>Card: •••• {paymentDetails.cardNumber.slice(-4)}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isFinalizingBooking && (
-        <div className="payment-modal">
-          <div className="modal-content payment-processing">
-            <div className="processing-animation">
-              <div className="spinner"></div>
-            </div>
-            <h3>Finalizing Your Booking</h3>
-            <p>We're preparing your perfect stay...</p>
-            <div className="processing-details">
-              <p>Booking Details:</p>
-              <p>{selectedRoom?.type}</p>
-              <p>{dates.checkIn} - {dates.checkOut}</p>
-            </div>
-          </div>
-        </div>
       )}
 
       <div className="booking-progress">

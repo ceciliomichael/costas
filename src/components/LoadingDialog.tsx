@@ -8,8 +8,8 @@ interface LoadingDialogProps {
 }
 
 const LoadingDialog: React.FC<LoadingDialogProps> = ({ 
-  message = 'Redirecting to booking...', 
-  duration = 1500,
+  message = 'Taking you to booking...',
+  duration,
   onComplete
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -30,8 +30,10 @@ const LoadingDialog: React.FC<LoadingDialogProps> = ({
   return (
     <div className="loading-dialog">
       <div className="loading-content">
-        <div className="loading-spinner" role="progressbar" aria-label="Loading"></div>
-        <p>{message}</p>
+        <div className="loading-spinner"></div>
+        <div className="loading-message">
+          <p>{message}</p>
+        </div>
       </div>
     </div>
   );

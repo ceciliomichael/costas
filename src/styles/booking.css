@@ -1927,4 +1927,52 @@
 .payment-success h3 {
   color: #4CAF50;
   margin: 1rem 0;
+}
+
+.guest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.guest-info .input-group {
+  width: 100%;
+}
+
+.guest-info input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.guest-info input:focus {
+  outline: none;
+  border-color: #B8860B;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.1);
+}
+
+.guest-info label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.guest-info input::placeholder {
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .guest-info {
+    margin-bottom: 1.5rem;
+  }
+
+  .guest-info input {
+    padding: 0.625rem;
+    font-size: 0.875rem;
+  }
 } 
