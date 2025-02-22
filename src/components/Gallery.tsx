@@ -11,35 +11,35 @@ const Gallery: React.FC = () => {
 
   const images = [
     {
-      url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b',
-      title: 'Luxury Suite'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+1',
+      title: 'Placeholder Image 1'
     },
     {
-      url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d',
-      title: 'Infinity Pool'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+2',
+      title: 'Placeholder Image 2'
     },
     {
-      url: 'https://images.unsplash.com/photo-1615880484746-a134be9a6ecf',
-      title: 'Beach View'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+3',
+      title: 'Placeholder Image 3'
     },
     {
-      url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945',
-      title: 'Resort Entrance'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+4',
+      title: 'Placeholder Image 4'
     },
     {
-      url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa',
-      title: 'Fine Dining'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+5',
+      title: 'Placeholder Image 5'
     },
     {
-      url: 'https://images.unsplash.com/photo-1540541338287-41700207dee6',
-      title: 'Spa Treatment'
+      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+6',
+      title: 'Placeholder Image 6'
     }
   ];
 
   return (
     <section className="gallery section-cream" id="gallery">
       <div className="container">
-        <h2 className="section-title fade-in">Explore Our Paradise</h2>
+        <h2 className="section-title fade-in">Gallery Section</h2>
         <div className="gallery-grid">
           {images.map((image, index) => (
             <div 
@@ -49,7 +49,7 @@ const Gallery: React.FC = () => {
               onClick={() => setSelectedImage(image)}
             >
               <div className="gallery-image">
-                <img src={`${image.url}?auto=format&fit=crop&w=800&q=80`} alt={image.title} />
+                <img src={image.url} alt={image.title} />
                 <div className="gallery-overlay">
                   <h3>{image.title}</h3>
                 </div>
@@ -71,7 +71,7 @@ const Gallery: React.FC = () => {
               ×
             </button>
             <img 
-              src={`${selectedImage.url}?auto=format&fit=crop&w=1600&q=100`} 
+              src={selectedImage.url}
               alt={selectedImage.title} 
             />
             <h3 className="modal-title">{selectedImage.title}</h3>

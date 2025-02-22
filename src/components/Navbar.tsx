@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
           e.preventDefault();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}>
-          Costas Resort
+          Costas De Liwa
         </a>
         <div className="nav-links">
           <a href="#gallery" className="nav-link" onClick={(e) => {

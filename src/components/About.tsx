@@ -9,30 +9,31 @@ const About: React.FC = () => {
           <div className="about-text fade-in">
             <h2 className="section-title">About Costas de Liwa</h2>
             <p className="about-description">
-              Nestled in the heart of Liwa's stunning landscape, Costas de Liwa offers a unique blend 
-              of luxury and nature. Our tepee-style accommodations provide an unforgettable glamping 
-              experience that connects you with nature while enjoying modern comforts.
+              Nestled in the serene community of Liwliwa in San Felipe, Zambales, Costas de Liwa offers a unique blend 
+              of budget-friendly coastal living and modern comfort. Our resort combines the natural beauty of the 
+              Philippine coast with innovative tepee-style accommodations, creating an unforgettable glamping experience.
             </p>
             <p className="about-description">
-              Each of our carefully designed tepees offers a perfect escape from the busy city life, 
-              allowing you to immerse yourself in the tranquility of nature without compromising on comfort.
+              Just a short 5-minute walk from Liwliwa Beach, our resort provides a peaceful retreat where you can 
+              enjoy the coastal ambiance while maintaining a comfortable distance from the crowds. We pride ourselves 
+              on offering cost-effective accommodations without compromising on essential amenities.
             </p>
           </div>
           <div className="about-features">
             <div className="feature-card fade-in" style={{ animationDelay: '0.2s' }}>
-              <i className="feature-icon">🌿</i>
-              <h3>Eco-Friendly</h3>
-              <p>Sustainable practices and natural materials</p>
+              <i className="feature-icon">🏊‍♂️</i>
+              <h3>Swimming Pool</h3>
+              <p>Refreshing outdoor pool for guests</p>
             </div>
             <div className="feature-card fade-in" style={{ animationDelay: '0.4s' }}>
-              <i className="feature-icon">✨</i>
-              <h3>Luxury Comfort</h3>
-              <p>Modern amenities in natural settings</p>
+              <i className="feature-icon">🍽️</i>
+              <h3>Restaurant & Bar</h3>
+              <p>On-site dining with local and international cuisine</p>
             </div>
             <div className="feature-card fade-in" style={{ animationDelay: '0.6s' }}>
               <i className="feature-icon">🌅</i>
-              <h3>Scenic Views</h3>
-              <p>Breathtaking landscapes and sunsets</p>
+              <h3>Beach Access</h3>
+              <p>5-minute walk to Liwliwa Beach</p>
             </div>
           </div>
         </div>

@@ -1,36 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Hero.css';
 import heroImage from '../assets/images/hero.jpg';
+import LoadingDialog from './LoadingDialog';
 
 const Hero: React.FC = () => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offset = 80; // Height of the fixed navbar
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+  const handleBooking = () => {
+    setIsLoading(true);
+    // Simulate a small delay for the loading animation
+    setTimeout(() => {
+      navigate('/booking', { 
+        state: { 
+          selectedRoomId: 'couple-tepee', // Default to couple tepee when booking from hero
+          selectedRoomType: 'Couple Tepee'
+        } 
       });
-    }
+    }, 1500);
   };
 
   return (
-    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${heroImage})` }}>
-      <div className="hero-content">
-        <h1>Welcome to<br />Costas Resort</h1>
-        <p>Experience Serenity in Luxury</p>
-        <button 
-          className="cta-button"
-          onClick={() => scrollToSection('book')}
-          aria-label="Book your stay at Costas Resort"
-        >
-          Book Your Stay
-        </button>
+    <>
+      {isLoading && <LoadingDialog />}
+      <div id="hero" className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${heroImage})` }}>
+        <div className="hero-content">
+          <h1>Welcome to<br />Costas De Liwa</h1>
+          <p>Experience a unique coastal escape where rustic charm meets modern comfort</p>
+          <button 
+            className="cta-button"
+            onClick={handleBooking}
+            aria-label="Book your stay at Costas De Liwa"
+          >
+            Book Your Stay
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

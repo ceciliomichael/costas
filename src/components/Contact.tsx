@@ -13,7 +13,7 @@ const Contact: React.FC = () => {
                 <i className="contact-icon">📍</i>
                 <div>
                   <h3>Location</h3>
-                  <p>Liwa, Pampanga, Philippines</p>
+                  <p>Liwliwa, San Felipe, Zambales</p>
                 </div>
               </div>
               <div className="contact-item">

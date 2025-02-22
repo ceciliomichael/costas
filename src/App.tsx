@@ -1,26 +1,24 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Gallery from './components/Gallery';
-import Rooms from './components/Rooms';
-import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import Booking from './pages/Booking';
+import ErrorPage from './components/ErrorPage';
+import LoadingDialog from './components/LoadingDialog';
 import './styles/App.css';
 
 const App: React.FC = () => {
   return (
-    <div className="app">
-      <Navbar />
-      <main>
-        <Hero />
-        <Gallery />
-        <Rooms />
-        <About />
-        <Contact />
-        <Footer />
-      </main>
-    </div>
+    <Router>
+      <Suspense fallback={<LoadingDialog message="Loading..." />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/error/500" element={<ErrorPage code="500" />} />
+          <Route path="/404" element={<ErrorPage code="404" />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 };
 
