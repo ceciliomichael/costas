@@ -6,7 +6,7 @@ import CustomerManagement from '../components/CustomerManagement';
 import Analytics from '../components/Analytics';
 
 // Import icons from react-icons
-import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt, FaRobot } from 'react-icons/fa';
+import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
 
 interface Statistics {
   roomTypeStats: Record<string, number>;
@@ -131,52 +131,6 @@ const AdminDashboard: React.FC = () => {
       case 'analytics':
         return <Analytics />;
 
-      case 'ai-knowledgebase':
-        return (
-          <div className="dashboard-section">
-            <h2>AI Knowledgebase</h2>
-            <div className="ai-knowledgebase">
-              <div className="kb-section">
-                <h3>Common Questions</h3>
-                <div className="kb-content">
-                  <p>Train the AI to answer common guest questions about:</p>
-                  <ul>
-                    <li>Room types and amenities</li>
-                    <li>Booking policies</li>
-                    <li>Check-in/out procedures</li>
-                    <li>Payment methods</li>
-                    <li>Cancellation policies</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="kb-section">
-                <h3>Response Management</h3>
-                <div className="kb-content">
-                  <p>Manage and customize AI responses for:</p>
-                  <ul>
-                    <li>Booking confirmations</li>
-                    <li>Guest inquiries</li>
-                    <li>Special requests</li>
-                    <li>Emergency situations</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="kb-section">
-                <h3>Training Data</h3>
-                <div className="kb-content">
-                  <p>Upload and manage training data:</p>
-                  <ul>
-                    <li>FAQ documents</li>
-                    <li>Policy documents</li>
-                    <li>Guest feedback</li>
-                    <li>Common scenarios</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
       default:
         return <div>Select a tab</div>;
     }
@@ -228,12 +182,6 @@ const AdminDashboard: React.FC = () => {
             onClick={() => setActiveTab('analytics')}
           >
             <FaChartBar /> Analytics
-          </button>
-          <button
-            className={`nav-item ${activeTab === 'ai-knowledgebase' ? 'active' : ''}`}
-            onClick={() => setActiveTab('ai-knowledgebase')}
-          >
-            <FaRobot /> AI Knowledgebase
           </button>
         </nav>
 

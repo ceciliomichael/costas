@@ -1,22 +1,39 @@
 import React, { Suspense, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Booking from './pages/Booking';
 import ErrorPage from './components/ErrorPage';
 import LoadingDialog from './components/LoadingDialog';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import ChatBot from './components/ChatBot';
 import './styles/App.css';
+
+const AppRoutes: React.FC = () => {
+  const location = useLocation();
+  const showChatBot = location.pathname === '/' || location.pathname === '/booking';
+
+  return (
+    <> 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/booking" element={<Booking />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/error/500" element={<ErrorPage code="500" />} />
+        <Route path="/404" element={<ErrorPage code="404" />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Routes>
+      {showChatBot && <ChatBot />}
+    </>
+  );
+};
 
 const App: React.FC = () => {
   useEffect(() => {
     // Clear all browser storage
-    localStorage.clear();
     sessionStorage.clear();
 
-    // Clear cache for specific items if needed
-    localStorage.removeItem('isAdminAuthenticated');
-    
     // Force reload assets by appending timestamp to URLs
     const links = document.querySelectorAll('link');
     const scripts = document.querySelectorAll('script');
@@ -51,16 +68,8 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Suspense fallback={<LoadingDialog message="Loading..." />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/error/500" element={<ErrorPage code="500" />} />
-          <Route path="/404" element={<ErrorPage code="404" />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
-        </Routes>
+      <Suspense fallback={<LoadingDialog message="Loading..." />}> 
+        <AppRoutes />
       </Suspense>
     </Router>
   );
