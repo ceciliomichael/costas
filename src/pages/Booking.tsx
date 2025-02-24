@@ -215,14 +215,13 @@ const Booking: React.FC = () => {
     'Confirmation'
   ];
 
-  const getTomorrow = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+  const getToday = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   const getMinCheckoutDate = () => {
-    if (!dates.checkIn) return getTomorrow();
+    if (!dates.checkIn) return getToday();
     const checkOut = new Date(dates.checkIn);
     checkOut.setDate(checkOut.getDate() + 1);
     return checkOut.toISOString().split('T')[0];
@@ -758,7 +757,7 @@ const Booking: React.FC = () => {
                     type="date"
                     id="check-in"
                     value={dates.checkIn}
-                    min={getTomorrow()}
+                    min={getToday()}
                     onChange={(e) => {
                       const newCheckIn = e.target.value;
                       setDates(prev => {
