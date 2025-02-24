@@ -1,6 +1,7 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface IBooking extends Document {
+  _id?: string;
   firstName: string;
   lastName: string;
   date: Date;
@@ -9,18 +10,18 @@ export interface IBooking extends Document {
   roomType: string;
   numberOfGuests: number;
   adults: number;
-  children?: number;
+  children: number;
   totalAmount: number;
   bookingReference: string;
   status: 'pending' | 'completed' | 'cancelled';
-  paymentProofPath?: string;
+  paymentProofId?: Types.ObjectId;
   email: string;
-  phoneNumber?: string;
+  phoneNumber: string;
   specialRequests?: string;
-  time?: string;
+  time: string;
   paymentMethod: string;
   paymentStatus: 'pending' | 'completed' | 'failed';
-  addOns?: string[];
+  addOns: string;
   createdAt?: Date;
 }
 

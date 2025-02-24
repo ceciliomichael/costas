@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FaSearch, FaFilter, FaPrint, FaEye, FaCheckCircle } from 'react-icons/fa';
+import { FaSearch, FaPrint, FaEye, FaCheckCircle } from 'react-icons/fa';
 import '../styles/BookingsManagement.css';
 
 interface Booking {
@@ -14,8 +14,14 @@ interface Booking {
   roomType: string;
   totalAmount: number;
   status: string;
-  paymentProofPath?: string;
-  addOns: string[];
+  paymentProofId?: {
+    _id: string;
+    name: string;
+    data: string;
+    contentType: string;
+    uploadDate: string;
+  };
+  addOns: string;
   adults: number;
   children: number;
   paymentMethod: string;
@@ -70,13 +76,18 @@ const BookingsManagement: React.FC = () => {
 
   useEffect(() => {
     fetchBookings(search, filters);
+
+    // Set up polling every 5 seconds
+    const pollInterval = setInterval(() => {
+      fetchBookings(search, filters);
+    }, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollInterval);
   }, [filters]);
 
   const fetchBookings = async (searchTerm: string, currentFilters: typeof filters) => {
     try {
-      setLoading(true);
-      setError('');
-
       const queryParams = new URLSearchParams();
       
       // Add search term if exists
@@ -95,17 +106,22 @@ const BookingsManagement: React.FC = () => {
         queryParams.append('endDate', currentFilters.endDate);
       }
 
-      const response = await fetch(`http://localhost:5000/api/bookings?${queryParams}`);
+      const response = await fetch(`https://costasbackend.ultrawavelet.me/api/bookings?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch bookings');
       }
 
       const data = await response.json();
-      setBookings(data);
+      
+      // Only update if there are actual changes
+      if (JSON.stringify(data) !== JSON.stringify(bookings)) {
+        setBookings(data);
+        setLoading(false);
+        console.log('Bookings list updated with new data');
+      }
     } catch (error) {
       console.error('Error fetching bookings:', error);
       setError('Failed to fetch bookings. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -132,7 +148,7 @@ const BookingsManagement: React.FC = () => {
 
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      const response = await fetch(`https://costasbackend.ultrawavelet.me/api/bookings/${bookingId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -536,7 +552,7 @@ const BookingsManagement: React.FC = () => {
                 {selectedBooking.addOns && selectedBooking.addOns.length > 0 && (
                   <div className="receipt-section">
                     <h4>Add-ons</h4>
-                    {selectedBooking.addOns.map((addOn, index) => (
+                    {selectedBooking.addOns.split(',').map((addOn, index) => (
                       <div key={index} className="receipt-row">
                         <span>{addOn}</span>
                         <span>Included</span>
@@ -563,13 +579,14 @@ const BookingsManagement: React.FC = () => {
                   </div>
                 </div>
 
-                {selectedBooking.paymentProofPath && (
+                {selectedBooking.paymentProofId && (
                   <div className="receipt-section payment-proof-section">
                     <h4>Payment Proof</h4>
                     <img
-                      src={`http://localhost:5000${selectedBooking.paymentProofPath}`}
+                      src={`data:${selectedBooking.paymentProofId.contentType};base64,${selectedBooking.paymentProofId.data}`}
                       alt="Payment Proof"
                       className="payment-proof-image"
+                      style={{ maxWidth: '100%', maxHeight: '300px' }}
                     />
                   </div>
                 )}

@@ -52,7 +52,7 @@ const Analytics: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:5000/api/bookings/statistics');
+      const response = await fetch('https://costasbackend.ultrawavelet.me/api/bookings/statistics');
       const data = await response.json();
       setStatistics(data);
       calculateTrends(data);
@@ -218,7 +218,7 @@ const Analytics: React.FC = () => {
                   dataKey="value"
                 >
                   {roomTypeData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip

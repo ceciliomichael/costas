@@ -45,6 +45,11 @@
   box-sizing: border-box;
 }
 
+/* Remove outline focus for all elements */
+*:focus {
+  outline: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Account for fixed navbar */

@@ -6,7 +6,7 @@ import CustomerManagement from '../components/CustomerManagement';
 import Analytics from '../components/Analytics';
 
 // Import icons from react-icons
-import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 
 interface Statistics {
   roomTypeStats: Record<string, number>;
@@ -18,6 +18,7 @@ interface Statistics {
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [statistics, setStatistics] = useState<Statistics>({
     roomTypeStats: {},
     monthlyRevenue: {},
@@ -32,15 +33,28 @@ const AdminDashboard: React.FC = () => {
       navigate('/admin');
     }
 
-    // Fetch statistics
+    // Initial fetch
     fetchStatistics();
+
+    // Set up polling every 5 seconds
+    const pollInterval = setInterval(() => {
+      fetchStatistics();
+    }, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollInterval);
   }, [navigate]);
 
   const fetchStatistics = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/bookings/statistics');
+      const response = await fetch('https://costasbackend.ultrawavelet.me/api/bookings/statistics');
       const data = await response.json();
-      setStatistics(data);
+      
+      // Only update if there are actual changes
+      if (JSON.stringify(data) !== JSON.stringify(statistics)) {
+        setStatistics(data);
+        console.log('Dashboard updated with new data');
+      }
     } catch (error) {
       console.error('Error fetching statistics:', error);
     }
@@ -152,7 +166,15 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="admin-dashboard">
+    <div className={`admin-dashboard ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <button 
+        className="sidebar-toggle"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        aria-label="Toggle Sidebar"
+      >
+        {isSidebarOpen ? <FaTimes /> : <FaBars />}
+      </button>
+
       <aside className="dashboard-sidebar">
         <div className="sidebar-header">
           <h2>Admin Panel</h2>
@@ -163,30 +185,30 @@ const AdminDashboard: React.FC = () => {
             className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <FaHome /> Overview
+            <FaHome /> <span>Overview</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'bookings' ? 'active' : ''}`}
             onClick={() => setActiveTab('bookings')}
           >
-            <FaBookmark /> Bookings
+            <FaBookmark /> <span>Bookings</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`}
             onClick={() => setActiveTab('customers')}
           >
-            <FaUsers /> Customers
+            <FaUsers /> <span>Customers</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
           >
-            <FaChartBar /> Analytics
+            <FaChartBar /> <span>Analytics</span>
           </button>
         </nav>
 
         <button className="logout-button" onClick={handleLogout}>
-          <FaSignOutAlt /> Logout
+          <FaSignOutAlt /> <span>Logout</span>
         </button>
       </aside>
 

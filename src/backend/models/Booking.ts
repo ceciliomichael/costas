@@ -18,7 +18,7 @@ const bookingSchema = new mongoose.Schema<IBooking>({
     enum: ['pending', 'completed', 'cancelled'],
     default: 'pending'
   },
-  paymentProofPath: { type: String, default: '' },
+  paymentProofId: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
   email: { type: String, required: true },
   phoneNumber: { type: String, default: '' },
   specialRequests: { type: String, default: '' },
@@ -29,7 +29,7 @@ const bookingSchema = new mongoose.Schema<IBooking>({
     enum: ['pending', 'completed', 'failed'],
     default: 'pending'
   },
-  addOns: [{ type: String }],
+  addOns: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

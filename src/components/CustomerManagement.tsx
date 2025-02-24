@@ -80,7 +80,7 @@ const CustomerManagement: React.FC = () => {
         queryParams.append('search', searchTerm.trim());
       }
 
-      const response = await fetch(`http://localhost:5000/api/customers?${queryParams}`);
+      const response = await fetch(`https://costasbackend.ultrawavelet.me/api/customers?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch customers');
       }
@@ -97,7 +97,7 @@ const CustomerManagement: React.FC = () => {
 
   const fetchCustomerStatistics = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/customers/statistics');
+      const response = await fetch('https://costasbackend.ultrawavelet.me/api/customers/statistics');
       if (!response.ok) {
         throw new Error('Failed to fetch customer statistics');
       }

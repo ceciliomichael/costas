@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import connectDB from './config/db';
 import Booking from './models/Booking';
+import Image from './models/Image';
 import { IBooking, BookingStatistics } from './types/booking';
 import { PipelineStage } from 'mongoose';
 
@@ -66,6 +67,21 @@ const upload = multer({
   }
 });
 
+// Configure multer for memory storage (for base64 conversion)
+const memoryStorage = multer.memoryStorage();
+const uploadToMemory = multer({
+  storage: memoryStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error('Only image files are allowed!'));
+    }
+    cb(null, true);
+  }
+});
+
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
@@ -73,7 +89,7 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 connectDB();
 
 // Routes
-app.post('/api/bookings', upload.single('paymentProof'), async (req: MulterRequest, res: Response) => {
+app.post('/api/bookings', uploadToMemory.single('paymentProof'), async (req: MulterRequest, res: Response) => {
   try {
     console.log('Received booking data:', req.body);
     console.log('Received file:', req.file);
@@ -83,19 +99,33 @@ app.post('/api/bookings', upload.single('paymentProof'), async (req: MulterReque
     const missingFields = requiredFields.filter(field => !req.body[field]);
 
     if (missingFields.length > 0) {
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(400).json({
         message: `Missing required fields: ${missingFields.join(', ')}`,
         missingFields
       });
     }
 
-    // Add file path to booking data if file was uploaded
+    let paymentProofId;
+    if (req.file) {
+      // Convert file buffer to base64
+      const base64Data = req.file.buffer.toString('base64');
+      
+      // Create new image document
+      const image = new Image({
+        name: req.file.originalname,
+        data: base64Data,
+        contentType: req.file.mimetype
+      });
+
+      // Save image to MongoDB
+      const savedImage = await image.save();
+      paymentProofId = savedImage._id;
+    }
+
+    // Create booking data with image reference
     const bookingData = {
       ...req.body,
-      paymentProofPath: req.file ? `/uploads/${req.body.bookingReference}/${req.file.filename}` : ''
+      paymentProofId
     };
 
     // Create and save the booking
@@ -106,8 +136,9 @@ app.post('/api/bookings', upload.single('paymentProof'), async (req: MulterReque
       console.log('Booking saved successfully:', savedBooking);
       res.status(201).json(savedBooking);
     } catch (validationError) {
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
+      // If booking fails, delete the uploaded image
+      if (paymentProofId) {
+        await Image.findByIdAndDelete(paymentProofId);
       }
       console.error('Validation error:', validationError);
       res.status(400).json({
@@ -116,9 +147,6 @@ app.post('/api/bookings', upload.single('paymentProof'), async (req: MulterReque
       });
     }
   } catch (error) {
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
-    }
     console.error('Server error:', error);
     res.status(500).json({
       message: 'Server error while processing booking',
@@ -162,6 +190,7 @@ app.get('/api/bookings', async (req: Request, res: Response) => {
 
     // Get bookings with filters and sort by date
     const bookings = await Booking.find(query)
+      .populate('paymentProofId')
       .sort({ date: -1 })
       .exec();
 
@@ -227,7 +256,7 @@ app.get('/api/bookings/statistics', async (req: Request, res: Response) => {
 // Get booking by ID
 app.get('/api/bookings/:id', async (req: Request, res: Response) => {
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id).populate('paymentProofId');
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
@@ -332,6 +361,78 @@ app.get('/api/customers/statistics', async (req: Request, res: Response) => {
     res.status(500).json({ 
       message: error instanceof Error ? error.message : 'Unknown error',
       error: error 
+    });
+  }
+});
+
+// Image upload route with base64 conversion
+app.post('/api/images/upload', uploadToMemory.single('image'), async (req: MulterRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Convert file buffer to base64
+    const base64Data = req.file.buffer.toString('base64');
+    
+    // Create new image document
+    const image = new Image({
+      name: req.file.originalname,
+      data: base64Data,
+      contentType: req.file.mimetype
+    });
+
+    // Save to MongoDB
+    const savedImage = await image.save();
+
+    res.status(201).json({
+      message: 'Image uploaded successfully',
+      imageId: savedImage._id,
+      name: savedImage.name
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({
+      message: 'Error uploading image',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get image by ID
+app.get('/api/images/:id', async (req: Request, res: Response) => {
+  try {
+    const image = await Image.findById(req.params.id);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    res.json({
+      name: image.name,
+      contentType: image.contentType,
+      data: image.data,
+      uploadDate: image.uploadDate
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error retrieving image',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Delete image by ID
+app.delete('/api/images/:id', async (req: Request, res: Response) => {
+  try {
+    const image = await Image.findByIdAndDelete(req.params.id);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    res.json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error deleting image',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });

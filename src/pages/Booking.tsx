@@ -367,6 +367,29 @@ const Booking: React.FC = () => {
     return `${prefix}${timestamp}${random}`;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        setPaymentValidationError('File size must be less than 5MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.match(/^image\/(jpeg|png|gif|jpg)$/)) {
+        setPaymentValidationError('Only image files (JPEG, PNG, GIF) are allowed');
+        return;
+      }
+
+      setPaymentDetails(prev => ({
+        ...prev,
+        paymentProof: file
+      }));
+      setPaymentValidationError('');
+    }
+  };
+
   const saveBookingToDatabase = async (reference: string) => {
     try {
       // Create form data to send file
@@ -388,7 +411,7 @@ const Booking: React.FC = () => {
         checkOutDate: new Date(dates.checkOut).toISOString(),
         adults: guests.adults,
         children: guests.children,
-        addOns: selectedAddOns,
+        addOns: selectedAddOns.join(','),
         totalAmount: calculateTotal().total,
         paymentMethod: selectedPaymentMethod,
         paymentStatus: 'completed',
@@ -407,7 +430,7 @@ const Booking: React.FC = () => {
 
       console.log('Sending booking data:', bookingData);
 
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      const response = await fetch('https://costasbackend.ultrawavelet.me/api/bookings', {
         method: 'POST',
         body: formData
       });
@@ -1081,10 +1104,7 @@ const Booking: React.FC = () => {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0] || null;
-                                  setPaymentDetails({ ...paymentDetails, paymentProof: file });
-                                }}
+                                onChange={handleFileChange}
                               />
                             </label>
                             {paymentDetails.paymentProof && (
@@ -1153,10 +1173,7 @@ const Booking: React.FC = () => {
                               <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0] || null;
-                                  setPaymentDetails({ ...paymentDetails, paymentProof: file });
-                                }}
+                                onChange={handleFileChange}
                               />
                             </label>
                             {paymentDetails.paymentProof && (
