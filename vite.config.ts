@@ -8,6 +8,6 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
-    allowedHosts: ['costas.ultrawavelet.me']
+    allowedHosts: ['costas.ultrawavelet.me', 'localhost', 'costas.pages.dev']
   }
 })
