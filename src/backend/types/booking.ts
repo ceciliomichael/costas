@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 
 export interface IBooking extends Document {
-  _id?: string;
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   date: Date;
