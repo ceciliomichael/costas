@@ -27,7 +27,7 @@
   border-radius: 3px;
 }
 
-.messages-error {
+.messages-management .messages-error {
   background-color: rgba(231, 76, 60, 0.1);
   border-left: 4px solid #e74c3c;
   color: #e74c3c;
@@ -35,10 +35,10 @@
   border-radius: 8px;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 10px rgba(231, 76, 60, 0.1);
-  animation: fadeIn 0.3s ease-in-out;
+  animation: messages-fadeIn 0.3s ease-in-out;
 }
 
-.messages-loading {
+.messages-management .messages-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,30 +49,36 @@
   box-shadow: var(--shadow-md);
 }
 
-.spinner {
-  animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+.messages-management .spinner {
+  animation: messages-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   color: var(--primary-color);
   opacity: 0.8;
 }
 
-@keyframes spin {
+@keyframes messages-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-@keyframes fadeIn {
+@keyframes messages-fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideIn {
+@keyframes messages-slideIn {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
-.messages-container {
+@keyframes messages-pulse {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.05); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 0.3; }
+}
+
+.messages-management .messages-container {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 2rem;
@@ -80,7 +86,7 @@
   min-height: 500px;
 }
 
-.messages-list {
+.messages-management .messages-list {
   background-color: var(--bg-light);
   border-radius: 15px;
   box-shadow: var(--shadow-md);
@@ -91,11 +97,11 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.messages-list:hover {
+.messages-management .messages-list:hover {
   box-shadow: var(--shadow-lg);
 }
 
-.messages-list h3 {
+.messages-management .messages-list h3 {
   padding: 1.25rem;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: white;
@@ -107,7 +113,7 @@
   letter-spacing: 0.5px;
 }
 
-.refresh-button {
+.messages-management .refresh-button {
   background: none;
   border: none;
   color: white;
@@ -123,13 +129,13 @@
   opacity: 0.8;
 }
 
-.refresh-button:hover {
+.messages-management .refresh-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
   transform: rotate(30deg);
   opacity: 1;
 }
 
-.messages-list ul {
+.messages-management .messages-list ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -139,20 +145,20 @@
   scrollbar-color: var(--primary-light) transparent;
 }
 
-.messages-list ul::-webkit-scrollbar {
+.messages-management .messages-list ul::-webkit-scrollbar {
   width: 6px;
 }
 
-.messages-list ul::-webkit-scrollbar-track {
+.messages-management .messages-list ul::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.messages-list ul::-webkit-scrollbar-thumb {
+.messages-management .messages-list ul::-webkit-scrollbar-thumb {
   background-color: var(--primary-light);
   border-radius: 6px;
 }
 
-.message-item {
+.messages-management .message-item {
   padding: 1.25rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
@@ -163,7 +169,7 @@
   overflow: hidden;
 }
 
-.message-item::before {
+.messages-management .message-item::before {
   content: '';
   position: absolute;
   top: 0;
@@ -174,28 +180,28 @@
   transition: background-color 0.3s ease;
 }
 
-.message-item:hover {
+.messages-management .message-item:hover {
   background-color: rgba(184, 134, 11, 0.05);
 }
 
-.message-item.selected {
+.messages-management .message-item.selected {
   background-color: rgba(184, 134, 11, 0.1);
 }
 
-.message-item.selected::before {
+.messages-management .message-item.selected::before {
   background-color: var(--primary-color);
 }
 
-.message-item.unread {
+.messages-management .message-item.unread {
   font-weight: bold;
   background-color: rgba(52, 152, 219, 0.05);
 }
 
-.message-item.unread::before {
+.messages-management .message-item.unread::before {
   background-color: #3498db;
 }
 
-.message-icon {
+.messages-management .message-icon {
   margin-right: 1.25rem;
   color: var(--primary-color);
   font-size: 1.2rem;
@@ -210,34 +216,34 @@
   transition: all 0.3s ease;
 }
 
-.message-item:hover .message-icon {
+.messages-management .message-item:hover .message-icon {
   transform: scale(1.1);
 }
 
-.message-item.unread .message-icon {
+.messages-management .message-item.unread .message-icon {
   color: #3498db;
   background-color: rgba(52, 152, 219, 0.1);
 }
 
-.message-preview {
+.messages-management .message-preview {
   flex-grow: 1;
   overflow: hidden;
 }
 
-.message-header {
+.messages-management .message-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
   align-items: center;
 }
 
-.message-sender {
+.messages-management .message-sender {
   font-weight: 500;
   color: var(--text-dark);
   font-size: 1.05rem;
 }
 
-.message-date {
+.messages-management .message-date {
   font-size: 0.8rem;
   color: var(--text-muted);
   background-color: rgba(0, 0, 0, 0.05);
@@ -245,7 +251,7 @@
   border-radius: 12px;
 }
 
-.message-subject {
+.messages-management .message-subject {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -254,7 +260,7 @@
   max-width: 100%;
 }
 
-.no-messages {
+.messages-management .no-messages {
   padding: 3rem 2rem;
   text-align: center;
   color: var(--text-muted);
@@ -266,14 +272,14 @@
   height: 100%;
 }
 
-.no-messages::before {
+.messages-management .no-messages::before {
   content: '📭';
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.5;
 }
 
-.message-detail {
+.messages-management .message-detail {
   background-color: var(--bg-light);
   border-radius: 15px;
   box-shadow: var(--shadow-md);
@@ -282,14 +288,14 @@
   flex-direction: column;
   transition: box-shadow 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.3s ease-in-out;
+  animation: messages-fadeIn 0.3s ease-in-out;
 }
 
-.message-detail:hover {
+.messages-management .message-detail:hover {
   box-shadow: var(--shadow-lg);
 }
 
-.no-message-selected {
+.messages-management .no-message-selected {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -300,21 +306,15 @@
   padding: 2rem;
 }
 
-.big-icon {
+.messages-management .big-icon {
   font-size: 5rem;
   margin-bottom: 1.5rem;
   opacity: 0.3;
   color: var(--primary-color);
-  animation: pulse 2s infinite ease-in-out;
+  animation: messages-pulse 2s infinite ease-in-out;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.05); opacity: 0.4; }
-  100% { transform: scale(1); opacity: 0.3; }
-}
-
-.message-detail-header {
+.messages-management .message-detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -323,19 +323,19 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.message-detail-header h3 {
+.messages-management .message-detail-header h3 {
   margin: 0;
   color: var(--secondary-color);
   font-family: 'Playfair Display', serif;
   font-size: 1.5rem;
 }
 
-.message-actions {
+.messages-management .message-actions {
   display: flex;
   align-items: center;
 }
 
-.action-button {
+.messages-management .action-button {
   background: none;
   border: none;
   font-size: 1rem;
@@ -352,7 +352,7 @@
   overflow: hidden;
 }
 
-.action-button::before {
+.messages-management .action-button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -366,43 +366,43 @@
   transition: transform 0.3s ease;
 }
 
-.action-button:hover::before {
+.messages-management .action-button:hover::before {
   transform: scale(1);
 }
 
-.read-button {
+.messages-management .read-button {
   color: #3498db;
 }
 
-.read-button:hover {
+.messages-management .read-button:hover {
   transform: translateY(-2px);
 }
 
-.delete-button {
+.messages-management .delete-button {
   color: #e74c3c;
 }
 
-.delete-button:hover {
+.messages-management .delete-button:hover {
   transform: translateY(-2px);
 }
 
-.delete-confirm {
+.messages-management .delete-confirm {
   display: flex;
   align-items: center;
   background-color: rgba(231, 76, 60, 0.1);
   padding: 0.75rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(231, 76, 60, 0.1);
-  animation: fadeIn 0.3s ease-in-out;
+  animation: messages-fadeIn 0.3s ease-in-out;
 }
 
-.delete-confirm span {
+.messages-management .delete-confirm span {
   margin-right: 0.75rem;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.delete-confirm button {
+.messages-management .delete-confirm button {
   border: none;
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
@@ -413,27 +413,27 @@
   font-weight: 500;
 }
 
-.confirm-yes {
+.messages-management .confirm-yes {
   background-color: #e74c3c;
   color: white;
 }
 
-.confirm-yes:hover {
+.messages-management .confirm-yes:hover {
   background-color: #c0392b;
   transform: translateY(-1px);
 }
 
-.confirm-no {
+.messages-management .confirm-no {
   background-color: #7f8c8d;
   color: white;
 }
 
-.confirm-no:hover {
+.messages-management .confirm-no:hover {
   background-color: #636e72;
   transform: translateY(-1px);
 }
 
-.message-detail-info {
+.messages-management .message-detail-info {
   margin-bottom: 1.5rem;
   padding: 1.25rem;
   border-radius: 10px;
@@ -442,20 +442,20 @@
   border-left: 3px solid var(--primary-light);
 }
 
-.message-sender-info,
-.message-date-info {
+.messages-management .message-sender-info,
+.messages-management .message-date-info {
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
 }
 
-.message-sender-info strong,
-.message-date-info strong {
+.messages-management .message-sender-info strong,
+.messages-management .message-date-info strong {
   min-width: 60px;
   color: var(--secondary-color);
 }
 
-.message-content {
+.messages-management .message-content {
   flex-grow: 1;
   overflow-y: auto;
   white-space: pre-line;
@@ -469,31 +469,31 @@
   scrollbar-color: var(--primary-light) transparent;
 }
 
-.message-content::-webkit-scrollbar {
+.messages-management .message-content::-webkit-scrollbar {
   width: 6px;
 }
 
-.message-content::-webkit-scrollbar-track {
+.messages-management .message-content::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.message-content::-webkit-scrollbar-thumb {
+.messages-management .message-content::-webkit-scrollbar-thumb {
   background-color: var(--primary-light);
   border-radius: 6px;
 }
 
 @media (max-width: 992px) {
-  .messages-container {
+  .messages-management .messages-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 1.5rem;
   }
   
-  .messages-list {
+  .messages-management .messages-list {
     max-height: 300px;
   }
   
-  .message-detail {
+  .messages-management .message-detail {
     padding: 1.5rem;
   }
 }
@@ -503,16 +503,16 @@
     padding: 1rem;
   }
   
-  .message-detail-header {
+  .messages-management .message-detail-header {
     flex-direction: column;
     align-items: flex-start;
   }
   
-  .message-actions {
+  .messages-management .message-actions {
     margin-top: 1rem;
   }
   
-  .delete-confirm {
+  .messages-management .delete-confirm {
     position: fixed;
     bottom: 1rem;
     left: 1rem;
@@ -524,7 +524,7 @@
     box-shadow: var(--shadow-lg);
   }
   
-  .message-detail-info {
+  .messages-management .message-detail-info {
     padding: 1rem;
   }
 } 
