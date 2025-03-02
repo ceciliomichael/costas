@@ -4,9 +4,10 @@ import '../styles/AdminDashboard.css';
 import BookingsManagement from '../components/BookingsManagement';
 import CustomerManagement from '../components/CustomerManagement';
 import Analytics from '../components/Analytics';
+import MessagesManagement from '../components/MessagesManagement';
 
 // Import icons from react-icons
-import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import { FaHome, FaUsers, FaBookmark, FaChartBar, FaSignOutAlt, FaBars, FaTimes, FaEnvelope } from 'react-icons/fa';
 
 interface Statistics {
   roomTypeStats: Record<string, number>;
@@ -144,6 +145,9 @@ const AdminDashboard: React.FC = () => {
       
       case 'analytics':
         return <Analytics />;
+        
+      case 'messages':
+        return <MessagesManagement />;
 
       default:
         return <div>Select a tab</div>;
@@ -204,6 +208,12 @@ const AdminDashboard: React.FC = () => {
             onClick={() => setActiveTab('analytics')}
           >
             <FaChartBar /> <span>Analytics</span>
+          </button>
+          <button
+            className={`nav-item ${activeTab === 'messages' ? 'active' : ''}`}
+            onClick={() => setActiveTab('messages')}
+          >
+            <FaEnvelope /> <span>Messages</span>
           </button>
         </nav>
 

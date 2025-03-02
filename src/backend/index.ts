@@ -7,7 +7,9 @@ import fs from 'fs';
 import connectDB from './config/db';
 import Booking from './models/Booking';
 import Image from './models/Image';
+import ContactMessage from './models/ContactMessage';
 import { IBooking, BookingStatistics } from './types/booking';
+import { IContactMessage } from './models/ContactMessage';
 import { PipelineStage } from 'mongoose';
 
 dotenv.config();
@@ -438,6 +440,144 @@ app.delete('/api/images/:id', async (req: Request, res: Response) => {
     res.status(500).json({
       message: 'Error deleting image',
       error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Contact Message Routes
+app.post('/api/contact', async (req: Request, res: Response) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields: name, email, subject, and message'
+      });
+    }
+    
+    // Create new contact message
+    const contactMessage = new ContactMessage({
+      name,
+      email,
+      subject,
+      message,
+      createdAt: new Date(),
+      isRead: false
+    });
+    
+    // Save to database
+    await contactMessage.save();
+    
+    return res.status(201).json({
+      success: true,
+      message: 'Your message has been sent successfully!',
+      data: contactMessage
+    });
+  } catch (error) {
+    console.error('Error saving contact message:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while sending your message. Please try again later.'
+    });
+  }
+});
+
+// Get all contact messages (for admin)
+app.get('/api/contact/messages', async (req: Request, res: Response) => {
+  try {
+    const messages = await ContactMessage.find().sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      count: messages.length,
+      data: messages
+    });
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching contact messages'
+    });
+  }
+});
+
+// Get a single contact message by ID
+app.get('/api/contact/messages/:id', async (req: Request, res: Response) => {
+  try {
+    const message = await ContactMessage.findById(req.params.id);
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact message not found'
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      data: message
+    });
+  } catch (error) {
+    console.error('Error fetching contact message:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching the contact message'
+    });
+  }
+});
+
+// Mark a message as read
+app.put('/api/contact/messages/:id/read', async (req: Request, res: Response) => {
+  try {
+    const message = await ContactMessage.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true }
+    );
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact message not found'
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Message marked as read',
+      data: message
+    });
+  } catch (error) {
+    console.error('Error updating contact message:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while updating the contact message'
+    });
+  }
+});
+
+// Delete a contact message
+app.delete('/api/contact/messages/:id', async (req: Request, res: Response) => {
+  try {
+    const message = await ContactMessage.findByIdAndDelete(req.params.id);
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact message not found'
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Contact message deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting contact message:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred while deleting the contact message'
     });
   }
 });
