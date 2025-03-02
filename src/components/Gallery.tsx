@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import '../styles/Gallery.css';
 
+// Import gallery images
+import gallery1 from '../assets/images/gallery1.png';
+import gallery2 from '../assets/images/gallery2.jpg';
+import gallery3 from '../assets/images/gallery3.jpg';
+import gallery4 from '../assets/images/gallery4.jpg';
+import gallery5 from '../assets/images/gallery5.jpg';
+import gallery6 from '../assets/images/gallery6.jpg';
+
 interface ImageModal {
   url: string;
   title: string;
@@ -11,28 +19,28 @@ const Gallery: React.FC = () => {
 
   const images = [
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+1',
-      title: 'Placeholder Image 1'
+      url: gallery1,
+      title: 'Costas de Liwa Resort Entrance'
     },
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+2',
-      title: 'Placeholder Image 2'
+      url: gallery2,
+      title: 'A-Frame Tepee Exterior'
     },
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+3',
-      title: 'Placeholder Image 3'
+      url: gallery3,
+      title: 'Tepee Interior with Loft'
     },
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+4',
-      title: 'Placeholder Image 4'
+      url: gallery4,
+      title: 'Night View with Pool'
     },
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+5',
-      title: 'Placeholder Image 5'
+      url: gallery5,
+      title: 'A-Frame Tepee and Relaxation Area'
     },
     {
-      url: 'https://placehold.co/800x600/e2e8f0/1e293b?text=Placeholder+Image+6',
-      title: 'Placeholder Image 6'
+      url: gallery6,
+      title: 'Beach Cabana and Lounge'
     }
   ];
 
